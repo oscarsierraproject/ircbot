@@ -36,6 +36,54 @@ def test_call_001_rpl_welcome_handler(mock_rfc2812_msg, raw_msg):
     async_irc.msg_processing(raw_msg) 
     mock_rfc2812_msg.assert_called_once_with(m)
 
+@pytest.mark.parametrize("raw_msg", 
+                        [ b":barjavel.freenode.net 372 thebot " +\
+                          b":- Welcome to barjavel.freenode.net in "+\
+                          b"Paris, FR, EU. \r\n'"
+                        ])
+@mock.patch("ircbot.rfc2812.handlers.process_msg_372_rpl_motd")
+def test_call_process_msg_375_rpl_motdstart(mock_rfc2812_msg, raw_msg):
+    """
+    Scenario: Test message processing function with RPL_MOTD command
+      Given a RPL_MOTD command message
+      Than it MUST be recognised and processed by process_msg_372_rpl_motd
+        function.
+    """
+    m = async_irc.msg_preprocessing(raw_msg)
+    async_irc.msg_processing(raw_msg) 
+    mock_rfc2812_msg.assert_called_once_with(m)
+
+@pytest.mark.parametrize("raw_msg", 
+                        [ b":barjavel.freenode.net 375 thebot " +\
+                          b":- barjavel.freenode.net Message of the Day -\r\n",
+                        ])
+@mock.patch("ircbot.rfc2812.handlers.process_msg_375_rpl_motdstart")
+def test_call_process_msg_375_rpl_motdstart(mock_rfc2812_msg, raw_msg):
+    """
+    Scenario: Test message processing function with RPL_MOTDSTART command
+      Given a RPL_MOTDSTART command message
+      Than it MUST be recognised and processed by process_msg_375_rpl_motdstart
+        function.
+    """
+    m = async_irc.msg_preprocessing(raw_msg)
+    async_irc.msg_processing(raw_msg) 
+    mock_rfc2812_msg.assert_called_once_with(m)
+
+@pytest.mark.parametrize("raw_msg", 
+                        [ b":barjavel.freenode.net 376 thebot " +\
+                          b":End of /MOTD command.\r\n", ])
+@mock.patch("ircbot.rfc2812.handlers.process_msg_376_rpl_endofmotd")
+def test_call_process_msg_376_rpl_endofmotd(mock_rfc2812_msg, raw_msg):
+    """
+    Scenario: Test message processing function with RPL_ENDOFMOTD command
+      Given a RPL_ENDOFMOTD command message
+      Than it MUST be recognised and processed by process_msg_376_rpl_endofmotd 
+        function.
+    """
+    m = async_irc.msg_preprocessing(raw_msg)
+    async_irc.msg_processing(raw_msg) 
+    mock_rfc2812_msg.assert_called_once_with(m)
+
 @pytest.mark.parametrize("raw_msg", [b'PING :verne.freenode.net\r\n', ])
 @mock.patch("ircbot.rfc1459.handlers.process_msg_ping")
 def test_call_process_msg_ping_handler(mock_rfc1459_msg, raw_msg):
